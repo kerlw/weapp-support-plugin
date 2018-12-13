@@ -1,8 +1,8 @@
 <idea-plugin>
-    <id>com.your.company.unique.plugin.id</id>
-    <name>Plugin display name here</name>
+    <id>com.ytw88.weappsupport</id>
+    <name>WeChat weapp Support</name>
     <version>1.0</version>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <vendor email="kerl.d.w@gmail.com" url="https://github.com/kerlw/weapp-support-plugin">Kerl.D.W</vendor>
 
     <description><![CDATA[
       Enter short description for your plugin here.<br>
@@ -20,13 +20,15 @@
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
-    <!-- uncomment to enable plugin in all products
+    <!-- Enable plugin for all products -->
     <depends>com.intellij.modules.lang</depends>
-    -->
+    <!-- This enables the PSI capability for JavaScript -->
+    <!--<depends>JavaScript</depends>-->
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
         <fileTypeFactory implementation="com.ytw88.weappsupport.wxss.WxssFileTypeFactory" />
+        <fileTypeFactory implementation="com.ytw88.weappsupport.wxml.WxmlFileTypeFactory" />
     </extensions>
 
     <actions>
