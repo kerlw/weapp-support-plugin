@@ -1,0 +1,191 @@
+{
+    // Name and the location of the parser which will be generated.
+    parserClass="com.ytw88.weappsupport.wxml.parser.WxmlParser"
+    parserUtilClass="com.ytw88.weappsupport.wxml.parser.WxmlParserUtil"
+
+    // All nodes will extend this class. This wraps AST node to a PSI node.
+    extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+    // Prefix for all generated classes.
+    psiClassPrefix="Wxml"
+    // Suffix for implementation classes.
+    psiImplClassSuffix="Impl"
+
+    // Location to be used when generating PSI classes.
+    psiPackage="com.ytw88.weappsupport.wxml.psi"
+    // Location to be used when generating PSI implementation classes.
+    psiImplPackage="com.ytw88.weappsupport.wxml.psi.impl"
+
+    // Element type holder class name.
+    elementTypeHolderClass="com.ytw88.weappsupport.wxml.psi.WxmlTypes"
+
+    // Class which will be used to create internal nodes.
+    elementTypeClass="com.ytw88.weappsupport.wxml.psi.WxmlElementType"
+    // Class which will be used to create leaf nodes.
+    tokenTypeClass="com.ytw88.weappsupport.wxml.psi.WxmlTokenType"
+
+    tokens = [
+        CommentCharData = 'regexp:[\S\s]*?'
+    ]
+}
+
+Document ::= MiscSequence? Element* MiscSequence?
+//S ::= (#x20 | #x9 | #xD | #xA)+
+Element ::= STag ( '/>' | ( '>' Content* ETag ) )
+QName ::= QNameCharData
+STag ::= '<' QName AttributeSequence? S*
+
+MiscSequence ::= Misc MiscSequence?
+
+Misc ::= Comment
+
+
+Comment ::= '<!--' CommentCharData? '-->'
+
+//
+//
+///////////////////////////////////////////////////////////////
+////     implemented as category predicates
+////     [[2]]  Char ::=  #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
+////     [[3]]  S ::= (#x20 | #x9 | #xD | #xA)+
+////     [[4]]  NameChar ::=Letter | Digit | '.' | '-' | '_' | ':' | CombiningChar | Extender
+////     [[5]]  Name ::= (Letter | '_' | ':') (NameChar)*
+////     QNames data is implemented as categories in order to avoid ambiguous parses,
+////     they exist as production in order to get an entry in the wfst.
+////     Prefix ::= NCName
+////     LocalPart ::= NCName
+////     QName ::= ( Prefix ':') ? LocalPart
+//
+//[[6]]  Names ::= NCName (S Names)?
+//[[7]]  Nmtoken ::= NameCharData
+//[[8]]  Nmtokens ::= Nmtoken (S Nmtokens)?
+//[[9]]  EntityValue ::= ('"' EntityData? '"') | ('\'' EntityData? '\'')
+//       // as the entity references are expanded, the data only is left to parse.
+//       // EntityValue ::= ('"' EntityChildSequence? '"') | ('\'' EntityChildSequence? '\'')
+//       // EntityChildSequence ::= EntityChild EntityChildSequence?
+//       // EntityChild ::= EntityCharData | PEReference | Reference
+//[[10]] AttValue ::= ('"' AttChildSequence? '"' ) | ('\'' AttChildSequence? '\'')
+//       AttChildSequence ::= AttChild AttChildSequence?
+//       AttChild ::= AttCharData | Reference | ParsedReference
+//       DefaultAttValue ::= ('"' DefaultAttChildSequence? '"' ) | ('\'' DefaultAttChildSequence? '\'')
+//       DefaultAttChildSequence ::= DefaultAttChild DefaultAttChildSequence?
+//       DefaultAttChild ::= DefaultAttCharData | Reference | ParsedReference
+//[[11]] SystemLiteral ::= ('"' SystemCharData? '"') | ('\'' SystemCharData? '\'')
+//[[12]] PubidLiteral ::= ('"' PubidCharData? '"') | ('\'' PubidCharData? '\'')
+////     [[13]] PubidChar ::= #x20 | #xD | #xA | [a-zA-Z0-9] | [-'()+,./:=?;!*#@$_%]
+////     [[14]] CharData ::= [^<&]* - ([^<&]* ']]>' [^<&]*)
+////[[15]]
+////     when data appears, then with a preceeding space. note that just space is ok.
+//[[16]] Pi ::= '<?' PiTarget (S PiCharData? )? '?>'
+////     [[17]] PITarget ::= NCName - (('X' | 'x') ('M' | 'm') ('L' | 'l'))
+//[[18]] CDSect ::= CDStart CDataCharData? CDEnd
+//[[19]] CDStart ::= '<![CDATA['
+////     [[20]] CData ::= (Char* - (Char* ']]>' Char*)
+//[[21]] CDEnd ::= ']]>'
+////[[22]] Prolog ::= XMLDecl? MiscSequence? DoctypeProlog?
+////       DoctypeProlog ::= DoctypeDecl MiscSequence?
+////[[23]] XMLDecl ::= '<?xml' VersionInfo EncodingDecl? SDDecl? S* '?>'
+//[[24]] VersionInfo ::= S+ version Eq ( ('"' VersionNumCharData '"') | ('\'' VersionNumCharData '\'') )
+//[[25]] Eq ::= S* '=' S*
+////     [[26]] VersionNum ::= ([a-zA-Z0-9_.:] | '-')+
+//
+//[[27]]
+////[[28]] DoctypeDecl ::= '<!DOCTYPE' S+ QName (S ExternalID)? S* ('[' IntSubsetDecl* ']' S* )? '>'
+////       // IntSubsetDeclSequence ::= IntSubsetDecl+
+////       IntSubsetDecl ::= DeclSep | MarkupDecl
+//[[28a]] DeclSep ::= S+ | PEReference | ParsedExtSubset
+//[[29]] MarkupDecl ::= ElementDecl | AttlistDecl | EntityDecl | NotationDecl | Pi | Comment
+//[[30]] ExtSubset ::= TextDecl? ExtSubsetDecl*
+//       // ExtSubset ::= TextDecl? ExtSubsetDeclSequence?
+//       // ExtSubsetDeclSequence ::= ExtSubsetDecl ExtSubsetDeclSequence?
+//       // ExtSubsetDeclSequence ::= ExtSubsetDecl+
+//[[31]] ExtSubsetDecl ::= MarkupDecl | ConditionalSect | DeclSep
+//[[32]] SDDecl ::= S+ standalone Eq ( ('"' YesOrNo '"') | ('\'' YesOrNo '\'') )
+//       YesOrNo ::= yes | no
+////     [[33]] ... [[38]] ?
+//[[39]] Element ::= STag ( '/>' | ( '>' Content* ETag ) )
+//       // this formulation overflows the stack for large content. for example, the xml rec
+//       // with reduction disabled generates an 800+ sequence for the character table.
+//       // Element ::= STag ( '/>' | ( '>' ContentSequence? ETag ) )
+//       // ContentSequence ::= Content ContentSequence?
+//       // the original formulation intriduced ambiguity which required unrestricted look-ahead
+//       // over the tag content
+//       // Element ::= EmptyElemTag | ( STag ContentSequence? ETag )
+//[[40]] STag ::= '<' QName AttributeSequence? S*
+//       AttributeSequence ::= Attribute AttributeSequence?
+//       // STag ::= '<' QName AttributeSequence? S* '>'
+//[[41]] Attribute ::= S+ QName Eq AttValue
+//[[42]] ETag ::= '</' QName S* '>'
+////     in content, try to parse CharData first so that tag parsers are active
+////     only once the tag start has been recognized.
+//[[43]] Content ::= CharData | Element | Comment | Pi | CDSect | Reference | ParsedReference
+//       // Content ::= CharData | Element | Reference | CDSect | Pi | Comment
+//       // Element does not now require this
+////     [[44]] EmptyElemTag ::= '<' QName AttributeSequence? S* '/>'
+//[[45]] ElementDecl ::= '<!ELEMENT' S+ QName S+ ContentSpec S* '>'
+//       //   the content spec is expressed without whitespace since it is stripped there
+//[[46]] ContentSpec ::= EMPTY | ANY | Mixed | Children
+//       // rewritten to eliminate otherwise unbounded look-ahead
+//[[47]] Children ::= ChoiceOrSeq Cardinality?
+//[[48]] Cp ::= ( QName | ChoiceOrSeq ) Cardinality?
+//       ChoiceOrSeq ::= '(' S* Cp ( Choice | Seq )? S* ')'
+//[[49]] Choice ::= ( S* '|' S* Cp )+
+//[[50]] Seq    ::= ( S* ',' S* Cp )+
+//       // Children ::= (Choice | Seq) Cardinality?
+//       // Cp ::= ( QName | Choice | Seq) Cardinality?
+//       // Choice ::= '(' S* Cp ( S* '|' S* Cp )+ S* ')'
+//       // Seq    ::= '(' S* Cp ( S* ',' S* Cp )* S* ')'
+//[[51]] Mixed ::= ( '(' S* PCDATA ( S* '|' S* QName )* S* ')' MixedCardinality )
+//               | ( '(' S* PCDATA S* ')' )
+//       Cardinality ::= '?' | '+' | '*'
+//       MixedCardinality ::= '*'
+//[[52]] AttlistDecl ::= '<!ATTLIST' S+ QName AttDefSequence? S* '>'
+//       AttDefSequence ::= AttDef AttDefSequence?
+//[[53]] AttDef ::= S+ QName S+ AttType S+ DefaultDecl
+//[[54]] AttType ::= StringType | TokenizedType | EnumeratedType
+//[[55]] StringType ::= CDATA
+//[[56]] TokenizedType ::= ID | IDREF | IDREFS | ENTITY | ENTITIES | NMTOKEN | NMTOKENS
+//[[57]] EnumeratedType ::= NotationType | Enumeration
+//[[58]] NotationType ::= NOTATION S+ '(' S* NotationTypeSequence S* ')'
+//       NotationTypeSequence ::= NCName (S*  '|' S* NotationTypeSequence )?
+////     the spec says Nmtoken, but the conformance tests say character sequence
+////     Enumeration ::= '(' Nmtoken ( '|' Nmtoken)* ')'
+//[[59]] Enumeration ::= '(' EnumerationSequence S* ')'
+//       EnumerationSequence ::= S* Nmtoken ( S* '|' EnumerationSequence )?
+//[[60]] DefaultDecl ::= REQUIRED | IMPLIED | (( FIXED S)? DefaultAttValue)
+//[[61]] ConditionalSect ::= IncludeSect | IgnoreSect | NamedConditionalSect
+//       // ConditionalSect ::= IncludeSect | IgnoreSect
+//[[62]] IncludeSect ::= '<![' S* INCLUDE S* '[' ExtSubsetDecl* ']]>'
+//       // IncludeSect ::= '<![' S* INCLUDE S* '[' ExtSubsetDecl* ']]>'
+//[[63]] IgnoreSect ::= '<![' S* IGNORE S* '[' IgnoreSectContents? ']]>'
+//[[64]] IgnoreSectContents ::= Ignore IgnoreSectContents?
+//[[65]] Ignore ::= IgnoreCData |  ('<![' IgnoreSectContents? ']]>' )
+//       NamedConditionalSect ::= '<![' S* PEReference S* '[' ExtSubsetDecl* ']]>'
+////     NamedConditionalSect ::= '<![' S* PEReference S* '[' ExtSubsetDecl* ']]>'
+//[[66]] CharRef ::= ('&#' Number ';') | ( '&#x' HexNumber ';' )
+//[[67]] Reference ::= EntityRef | CharRef
+//[[68]] EntityRef ::= '&' NCName ';'
+//[[69]] PEReference ::= '%' NCName ';'
+//[[70]] EntityDecl ::= '<!ENTITY' S+ ( GEDecl | PEDecl )
+////     EntityDecl ::= GEDecl | PEDecl
+//[[71]] GEDecl ::= NCName S+ EntityDef S* '>'
+////     GEDecl ::= '<!ENTITY' S+ NCName S+ EntityDef S* '>'
+//[[72]] PEDecl ::= '%' S+ NCName S+ PEDef S* '>'
+//       // PEDecl ::= '<!ENTITY' S+ '%' S+ NCName S+ PEDef S* '>'
+//[[73]] EntityDef ::= EntityValue | (ExternalID NDataDecl?)
+//[[74]] PEDef ::= EntityValue | ExternalID
+//[[75]] ExternalID ::= ( SYSTEM S+ SystemLiteral )
+//                    | ( PUBLIC S+ PubidLiteral S+ SystemLiteral )
+//[[76]] NDataDecl ::=  S+ NDATA S+ NCName
+//[[77]] TextDecl ::= '<?xml' VersionInfo? EncodingDecl S* '?>'
+//[[78]] ExtParsedEnt ::= TextDecl? Content*
+////     [[79]]  eliminated ExtPE ::= TextDecl? ExtSubsetDecl*
+//[[80]] EncodingDecl ::=  S+ encoding Eq ( ('"' EncNameCharData '"') | ( '\'' EncNameCharData '\'' ) )
+////     [[81]] EncName ::= [A-Za-z] ([A-Za-z0-9._] | '-')*
+//[[82]] NotationDecl ::= '<!NOTATION'  S+ NCName S+ PublicID S* '>'
+////     NotationDecl ::= '<!NOTATION'  S+ NCName S+ (ExternalID |  PublicID) S* '>'
+//[[83]] PublicID  ::= ( SYSTEM S+ SystemLiteral )
+//                   | ( PUBLIC S+ PubidLiteral (S+ SystemLiteral)? )
+////     PublicID ::= PUBLIC S+ PubidLiteral
+//
+
