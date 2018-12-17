@@ -1,8 +1,7 @@
 package com.ytw88.weappsupport.wxml;
 
-import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import com.intellij.openapi.util.IconLoader;
+import com.ytw88.weappsupport.IconsLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,6 +37,6 @@ public class WxmlFileType extends LanguageFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return IconLoader.findIcon("/icons/wxml.png");
+        return IconsLoader.WXML_ICON;
     }
 }

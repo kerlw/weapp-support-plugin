@@ -2,6 +2,7 @@ package com.ytw88.weappsupport.wxss;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.util.IconLoader;
+import com.ytw88.weappsupport.IconsLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,6 +37,6 @@ public class WxssFileType extends LanguageFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return IconLoader.findIcon("/icons/wxss.png");
+        return IconsLoader.WXSS_ICON;
     }
 }

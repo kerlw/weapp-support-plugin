@@ -29,7 +29,7 @@
         S = 'regexp:\s+'
 
         Comment = 'regexp:\<!--[\s\S]*?--\>'
-        QNameCharData = 'regexp:\w?'
+        QNameCharData = 'regexp:\w'
         CharData = 'regexp:\w?'
 
     ]
@@ -37,13 +37,18 @@
 
 Document ::= DocumentElement*
 //S ::= (0x20 | 0x9 | 0xD | 0xA)+
-DocumentElement ::= Comment | Element
+DocumentElement ::= Comment | Element | S
 Element ::= STag ( '/>' | ( '>' Content* ETag ) )
+STag ::= '<' QName AttributeSequence* S*
+
 QName ::= (Prefix ':')? LocalPart
-STag ::= '<' QName AttributeSequence? S*
+Prefix ::= NCName
+LocalPart ::= NCName
+NCName ::= QNameCharData+ (QNameCharData | '-')*
+
 AttributeSequence ::= Attribute AttributeSequence?
 Attribute ::= S+ QName Eq AttValue
-AttValue ::= ('"' AttChildSequence? '"' ) | ('\'' AttChildSequence? '\'')
+AttValue ::= ('"' AttChildSequence? '"' ) | ("'" AttChildSequence? "'")
 AttChildSequence ::= AttChild AttChildSequence?
 AttChild ::= AttCharData | Reference | ParsedReference
 Reference ::= '{{' QName | Expression '}}'
@@ -53,7 +58,7 @@ DefaultAttChild ::= DefaultAttCharData | Reference | ParsedReference
 ETag ::= '</' QName S* '>'
 //     in content, try to parse CharData first so that tag parsers are active
 //     only once the tag start has been recognized.
-Content ::= CharData | Element | Comment
+Content ::= CharData | Element | Comment | S
 
 //MiscSequence ::= Misc MiscSequence?
 //

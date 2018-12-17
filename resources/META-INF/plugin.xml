@@ -29,6 +29,11 @@
         <!-- Add your extensions here -->
         <fileTypeFactory implementation="com.ytw88.weappsupport.wxss.WxssFileTypeFactory" />
         <fileTypeFactory implementation="com.ytw88.weappsupport.wxml.WxmlFileTypeFactory" />
+
+        <lang.syntaxHighlighterFactory language="weapp-wxml" implementationClass="com.ytw88.weappsupport.wxml.WxmlSyntaxHighlighterFactory"/>
+        <lang.parserDefinition language="weapp-wxml" implementationClass="com.ytw88.weappsupport.wxml.WxmlParserDefinition"/>
+        <colorSettingsPage implementation="com.ytw88.weappsupport.wxml.WxmlColorSettingsPage"/>
+
     </extensions>
 
     <actions>
