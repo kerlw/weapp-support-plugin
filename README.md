@@ -16,3 +16,27 @@ IDEA官方文档中，对于语言支持插件开发的文档"Part VII - Custom 
 
 [具体的教程](http://www.jetbrains.org/intellij/sdk/docs/tutorials/custom_language_support_tutorial.html)
 
+
+## 更新日记
+
+### 2018.12.18
+今天发现jetbrains还有一个社区的js库定义，专门辅助完善一些js框架的类库定义。可以在`Preferences |
+ Languages & Frameworks | JavaScript | Libraries`设置中添加一些library，而且这个设置界面
+ 直接提供了下载功能，列举了git上该开源项目相关的定义，其中找到三个可能和微信小程序有关的
+ * weapp-api
+ * wegame-api
+ * wexin-app
+ 
+ git上的开源项目地址: [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped)
+ 
+ 关于ide的javascript library介绍:
+ 
+  [How WebStorm Works: Completion for JavaScript Libraries](https://blog.jetbrains.com/webstorm/2014/07/how-webstorm-works-completion-for-javascript-libraries/)
+  
+  [Configuring JavaScript Libraries](https://www.jetbrains.com/help/idea/configuring-javascript-libraries.html)
+  
+  文2中注明了
+  > This feature is only supported in the Ultimate edition.
+  
+  目前在webstorm中测试过，三个library都可以用，但是weapp-api定义没有wexin-app定义全面
+ 
