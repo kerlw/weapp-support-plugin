@@ -27,6 +27,10 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <framework.type implementation="com.ytw88.weappsupport.WeappFramework" />
+        <moduleBuilder builderClass="com.ytw88.weappsupport.WeappModuleBuilder" id="WEAPP_BUILDER" order="first" />
+        <moduleType implementationClass="com.ytw88.weappsupport.WeappModuleType" id="WEAPP_MODULE" />
+        <projectStructureDetector implementation="com.ytw88.weappsupport.WeappProjectStructureDetector" />
         <fileTypeFactory implementation="com.ytw88.weappsupport.wxss.WxssFileTypeFactory" />
         <fileTypeFactory implementation="com.ytw88.weappsupport.wxml.WxmlFileTypeFactory" />
 
