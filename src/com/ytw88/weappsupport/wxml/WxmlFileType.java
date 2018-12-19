@@ -1,5 +1,6 @@
 package com.ytw88.weappsupport.wxml;
 
+import com.intellij.ide.highlighter.HtmlFileType;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.ytw88.weappsupport.IconsLoader;
 import org.jetbrains.annotations.NotNull;

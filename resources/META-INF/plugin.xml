@@ -23,7 +23,7 @@
     <!-- Enable plugin for all products -->
     <depends>com.intellij.modules.lang</depends>
     <!-- This enables the PSI capability for JavaScript -->
-    <!--<depends>JavaScript</depends>-->
+    <depends>JavaScript</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
@@ -38,6 +38,10 @@
         <lang.parserDefinition language="weapp-wxml" implementationClass="com.ytw88.weappsupport.wxml.WxmlParserDefinition"/>
         <colorSettingsPage implementation="com.ytw88.weappsupport.wxml.WxmlColorSettingsPage"/>
 
+    </extensions>
+
+    <extensions defaultExtensionNs="JavaScript">
+        <predefinedLibraryProvider implementation="com.ytw88.weappsupport.WeappJSPredefinedLibraryProvider"/>
     </extensions>
 
     <actions>

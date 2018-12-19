@@ -2,18 +2,19 @@ package com.ytw88.weappsupport.wxss;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import com.intellij.openapi.util.IconLoader;
+import com.intellij.psi.css.CssFileType;
 import com.ytw88.weappsupport.IconsLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class WxssFileType extends LanguageFileType {
+public class WxssFileType extends CssFileType {
     public static final LanguageFileType INSTANCE = new WxssFileType();
     public static final String DEFAULT_EXTENSION = "wxss";
 
     private WxssFileType() {
-        super(WxssLanguage.INSTANCE);
+        super();
     }
 
     @NotNull

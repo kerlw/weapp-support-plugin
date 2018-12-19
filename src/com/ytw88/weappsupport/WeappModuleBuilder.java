@@ -15,7 +15,7 @@ public class WeappModuleBuilder extends ModuleBuilder {
     public void setupRootModel(ModifiableRootModel modifiableRootModel) throws ConfigurationException {
         //TODO ....
         LibraryTable libraryTable = modifiableRootModel.getModuleLibraryTable();
-
+        libraryTable.createLibrary();
     }
 
     @Override
@@ -28,4 +28,12 @@ public class WeappModuleBuilder extends ModuleBuilder {
     public ModuleWizardStep getCustomOptionsStep(WizardContext context, Disposable parentDisposable) {
         return new WeappModuleWizardStep();
     }
+
+    @Nullable
+    @Override
+    public String getBuilderId() {
+        return "weapp";
+    }
+
+
 }
