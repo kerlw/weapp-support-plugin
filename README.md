@@ -1,5 +1,3 @@
-[TOC]
-
 # WeApp Support Plugin 微信小程序支持插件
 
 想要实现一个微信小程序的JetBrain IDE插件，但是经过尝试发现写BNF的Grammar对我来说实在有点困
