@@ -3605,12 +3605,19 @@ declare namespace wx {
 	}
 	/**
 	 * 创建并返回绘图上下文context对象。
-	 * context只是一个记录方法调用的容器，
-	 * 用于生成记录绘制行为的actions数组。c
-	 * ontext跟<canvas/>不存在对应关系，
-	 * 一个context生成画布的绘制动作数组可以应用于多个<canvas/>。
+	 * context只是一个记录方法调用的容器，用于生成记录绘制行为的actions数组。context跟<canvas/>不存在对应关系，
+	 * 一个context生成画布的绘制动作数组可以应用于多个<canvas/>
+	 * @deprecated
+	 * @see wx.createCanvasContext
 	 */
 	function createContext(): CanvasContext;
+
+    /**
+	 * 创建 canvas 的绘图上下文 CanvasContext 对象
+	 * @param canvasId 要获取上下文的 <canvas> 组件 canvas-id 属性
+	 * @param thisObj 在自定义组件下，当前组件实例的this，表示在这个自定义组件下查找拥有 canvas-id 的 <canvas/> ，如果省略则不在任何自定义组件内查找
+     */
+	function createCanvasContext(canvasId: string, thisObj: object): CanvasContext;
 	interface DrawCanvasOptions {
 		/** 画布标识，传入 <canvas/> 的 cavas-id */
 		canvasId: number | string;

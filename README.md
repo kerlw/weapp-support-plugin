@@ -81,3 +81,4 @@ IDEA官方文档中，对于语言支持插件开发的文档"Part VII - Custom 
   3. 增加mDNS相关接口定义
   4. 增加wx.compressImage接口定义
   5. 增加FileSystemManager及wx.getFileSystemManager定义
+  6. createContext接口标记为deprecated,增加createCanvasContext接口的定义
