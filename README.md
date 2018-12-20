@@ -74,4 +74,10 @@ IDEA官方文档中，对于语言支持插件开发的文档"Part VII - Custom 
   > * <import .....
   > * <block wx:if/elif/else....
   
-  
+  ### 2018.12.20
+  更新wxapi的定义
+  1. CanvasContext更新接口定义，增加属性定义，增加方法arcTo, clip, createPattern, measureText, setLineDash, setTextBaseline, strokeText, setTransform, transform定义
+  2. 增加Worker相关定义
+  3. 增加mDNS相关接口定义
+  4. 增加wx.compressImage接口定义
+  5. 增加FileSystemManager及wx.getFileSystemManager定义

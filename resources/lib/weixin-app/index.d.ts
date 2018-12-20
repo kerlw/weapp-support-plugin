@@ -257,6 +257,19 @@ declare namespace wx {
 	 * 从本地相册选择图片或使用相机拍照。
 	 */
 	function chooseImage(options: ChooseImageOptions): void;
+
+	interface CompressImageOptions extends BaseOptions {
+		/** 图片路径，图片的路径，可以是相对路径、临时文件路径、存储文件路径 */
+		src: string;
+		/** 压缩质量，范围0～100，数值越小，质量越低，压缩率越高。默认值: 80*/
+		quality?: number;
+	}
+    /**
+	 * 压缩图片接口，可选压缩质量
+     * @param options
+	 * @version 2.4.0
+     */
+    function compressImage(options: CompressImageOptions): void;
 	interface PreviewImageOptions extends BaseOptions {
 		/** 当前显示图片的链接，不填则默认为 urls 的第一张 */
 		current?: string;
@@ -852,6 +865,495 @@ declare namespace wx {
 	 * @version 1.4.0
 	 */
 	function getFileInfo(options: GetFileInfoOptions): void;
+
+	interface AccessFailResp {
+		/** 错误信息，合法值: "fail no such file or directory ${path}"	文件/目录不存在*/
+		errMsg: string;
+	}
+	interface AccessOptions extends BaseOptions<any, AccessFailResp> {
+		/** 要判断是否存在的文件/目录路径 */
+		path: string;
+	}
+    interface AppendFileFailResp {
+        /**
+		 *  错误信息，合法值:
+		 *  + "fail no such file or directory, open ${filePath}"	指定的 filePath 文件不存在
+		 *  + 'fail illegal operation on a directory, open "${filePath}"' 指定的 filePath 是一个已经存在的目录
+		 *  + "fail permission denied, open ${dirPath}" 指定的 filePath 路径没有写权限
+		 *  + "fail sdcard not mounted" 指定的 filePath 是一个已经存在的目录
+		 */
+        errMsg: string;
+    }
+    interface AppendFileOptions extends BaseOptions<any, AppendFileFailResp> {
+		/** 要追加内容的文件路径 */
+		filePath: string;
+		/** 要追加的文本或二进制数据 */
+        data: string | ArrayBuffer;
+        /**
+		 * 指定写入文件的字符编码,合法值:"ascii", "base64", "binary", "hex", "ucs2/ucs-2/utf16le/utf-16le",
+		 * "utf-8/utf8", "latin1",默认值: "utf8"
+		 */
+        encoding?: string;
+    }
+
+    interface CopyFileFailResp {
+        /**
+         *  错误信息，合法值:
+         *  + "fail permission denied, copyFile ${srcPath} -> ${destPath}"	指定目标文件路径没有写权限
+         *  + "fail no such file or directory, copyFile ${srcPath} -> ${destPath}" 源文件不存在，或目标文件路径的上层目录不存在
+         */
+        errMsg: string;
+    }
+
+    interface CopyFileOptions extends BaseOptions<any, CopyFileFailResp> {
+        /** 源文件路径，只可以是普通文件 */
+        srcPath: string;
+        /** 目标文件路径 */
+        destPath: string;
+    }
+
+    interface FileInfoOptions extends BaseOptions {
+		/** 要读取的文件路径 */
+		filePath: string;
+		success?(res: {
+			/** 文件大小，以字节为单位 */
+			size: number;
+		}): void;
+		fail?(res: {
+			/** fail file not exist	指定的 filePath 找不到文件 */
+            errMsg: string;
+		}): void;
+	}
+
+	interface MakeDirOptions extends BaseOptions {
+		/** 创建的目录路径 */
+		dirPath: string;
+        /**
+		 * 是否在递归创建该目录的上级目录后再创建该目录。如果对应的上级目录已经存在，则不创建该上级目录。如 dirPath 为 a/b/c/d 且
+		 * recursive 为 true，将创建 a 目录，再在 a 目录下创建 b 目录，以此类推直至创建 a/b/c 目录下的 d 目录。
+		 * @version 2.3.0
+         */
+		recursive?: boolean;
+		fail?(res: {
+            /**
+			 * 错误信息，合法值:
+			 * + fail no such file or directory ${dirPath}	上级目录不存在
+			 * + fail permission denied, open ${dirPath}	指定的 filePath 路径没有写权限
+			 * + fail file already exists ${dirPath}	有同名文件或目录
+             */
+			errMsg: string;
+		}): void;
+	}
+	type RmDirOptions = MakeDirOptions;
+
+	interface ReadDirOptions extends BaseOptions {
+		/** 要读取的目录路径 */
+		dirPath: string;
+		success?(res: {
+			/** 指定目录下的文件名数组 */
+			files: Array<string>;
+		}): void;
+		fail?(res: {
+            /**
+			 * 错误信息，合法值:
+			 * + fail no such file or directory ${dirPath}	目录不存在
+			 * + fail not a directory ${dirPath}	dirPath 不是目录
+			 * + fail permission denied, open ${dirPath}	指定的 filePath 路径没有读权限
+             */
+			errMsg: string;
+		}): void
+	}
+
+	interface ReadFileOptions extends BaseOptions {
+		/** 要读取的文件的路径 */
+		filePath: string;
+        /**
+		 * 指定读取文件的字符编码，如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容
+		 * 合法值: "ascii", "base64", "binary", "hex", "ucs2/ucs-2/utf16le/utf-16le", "utf-8/utf8", "latin1"
+         */
+		encoding: string;
+		success?(res: {
+			/** 文件内容 */
+			data: string | ArrayBuffer;
+		}): void;
+		fail?(res: {
+            /**
+			 * 错误信息，合法值:
+			 * + fail no such file or directory, open ${filePath}	指定的 filePath 所在目录不存在
+			 * + fail permission denied, open ${dirPath}	指定的 filePath 路径没有读权限
+             */
+			errMsg: string;
+		}): void;
+	}
+
+	interface RenameOptions extends BaseOptions {
+		/** 	源文件路径，可以是普通文件或目录 */
+		oldPath: string;
+		/** 新文件路径 */
+		newPath: string;
+		fail?(res: {
+			/**
+			 * 错误信息，合法值:
+			 * + fail permission denied, rename ${oldPath} -> ${newPath}	指定源文件或目标文件没有写权限
+             * + fail no such file or directory, rename ${oldPath} -> ${newPath}	源文件不存在，或目标文件路径的上层目录不存在
+			 */
+			errMsg: string;
+		}): void;
+	}
+
+	interface SaveFileOptions extends BaseOptions {
+		/** 临时存储文件路径 */
+		tempFilePath: string;
+		/** 要存储的文件路径 */
+		filePath?: string;
+		success?(res: {
+			/** 存储后的文件路径 */
+             savedFilePath: string;
+		}): void;
+		fail?(res: {
+            /**
+			 * 错误信息， 合法值:
+			 * + fail tempFilePath file not exist	指定的 tempFilePath 找不到文件
+             * + fail permission denied, open "${filePath}"	指定的 filePath 路径没有写权限
+             * + fail no such file or directory "${dirPath}"	上级目录不存在
+             */
+			errMsg: string;
+		}): void;
+	}
+
+    /**
+	 * 描述文件状态的对象
+     */
+    interface Stats {
+    	/** 文件的类型和存取的权限，对应 POSIX stat.st_mode */
+    	mode: string;
+    	/** 文件大小，单位：B，对应 POSIX stat.st_size */
+    	size: number;
+		/** 文件最近一次被存取或被执行的时间，UNIX 时间戳，对应 POSIX stat.st_atime */
+        lastAccessedTime: number;
+        /** 文件最后一次被修改的时间，UNIX 时间戳，对应 POSIX stat.st_mtime */
+        lastModifiedTime: number;
+
+        /** 判断当前文件是否一个目录 */
+		isDirectory(): boolean;
+		/** 判断当前文件是否一个普通文件 */
+		isFile(): boolean;
+	}
+
+	interface StatOptions extends BaseOptions {
+    	/** 文件/目录路径 */
+    	path: string;
+    	/** 是否递归获取目录下的每个文件的 Stats 信息, 默认值：false*/
+    	recursive?: boolean;
+    	success?(res: {
+            /**
+			 * 当 recursive 为 false 时，res.stats 是一个 Stats 对象。当 recursive 为 true 且 path 是一个目录的路径时，
+			 * res.stats 是一个 Object，key 以 path 为根路径的相对路径，value 是该路径对应的 Stats 对象。
+             */
+			stat: Stats | object
+        }): void;
+    	fail?(res: {
+            /**
+			 * 错误信息，合法值:
+			 * + fail permission denied, open ${path}	指定的 path 路径没有读权限
+             * + fail no such file or directory ${path}	文件不存在
+             */
+    		errMsg: string;
+		}):void;
+	}
+
+	interface UnlinkOptions extends BaseOptions {
+    	/** 要删除的文件路径 */
+    	filePath: string;
+    	fail?(res: {
+            /**
+			 * 错误信息，合法值：
+			 * + fail permission denied, open ${path}	指定的 path 路径没有读权限
+             * + fail no such file or directory ${path}	文件不存在
+             * + fail operation not permitted, unlink ${filePath}	传入的 filePath 是一个目录
+             */
+    		errMsg: string;
+		}): void;
+	}
+
+    interface UnzipOptions extends BaseOptions {
+    	/** 源文件路径，只可以是 zip 压缩文件 */
+        zipFilePath: string;
+        /** 目标目录路径 */
+        targetPath: string;
+
+        fail?(res: {
+            /**
+			 * 错误信息，合法值:
+			 * + fail permission denied, unzip ${zipFilePath} -> ${destPath}	指定目标文件路径没有写权限
+             * + fail no such file or directory, unzip ${zipFilePath} -> "${destPath}	源文件不存在，或目标文件路径的上层目录不存在
+             */
+        	errMsg: string;
+		}): void;
+    }
+
+    interface WriteFileOptions extends BaseOptions {
+    	/** 要写入的文件路径 */
+    	filePath: string;
+    	/** 要写入的文本或二进制数据 */
+    	data: string | ArrayBuffer;
+    	/**
+		 *  指定写入文件的字符编码，合法值:"ascii", "base64", "binary", "hex", "ucs2/ucs-2/utf16le/utf-16le","utf-8/utf8", "latin1"
+		 *  默认值:utf8
+		 */
+    	encoding?: string;
+    	fail?(res: {
+            /**
+			 * 错误信息，合法值:
+			 * + fail no such file or directory, open ${filePath}	指定的 filePath 所在目录不存在
+             * + fail permission denied, open ${dirPath}	指定的 filePath 路径没有写权限
+             */
+    		errMsg: string
+		}): void;
+	}
+    /**
+	 * 文件管理器
+	 * @version 1.9.9
+     */
+	interface FileSystemManager {
+        /**
+		 * 判断文件/目录是否存在
+         * @param option
+         */
+		access(option: AccessOptions): void;
+
+        /**
+		 * FileSystemManager.access 的同步版本
+         * @param path 要判断是否存在的文件/目录路径
+		 * 文件不存在时，抛出异常
+		 * fail no such file or directory ${path}	文件/目录不存在
+         */
+        accessSync(path: string): void;
+
+        /**
+		 * 在文件结尾追加内容
+         * @param option
+		 * @version 2.1.0
+         */
+        appendFile(option: AppendFileOptions): void;
+
+        /**
+		 * FileSystemManager.appendFile 的同步版本，失败时抛出异常:
+		 * + fail no such file or directory, open ${filePath}	指定的 filePath 文件不存在
+         * + fail illegal operation on a directory, open "${filePath}"	指定的 filePath 是一个已经存在的目录
+         * + fail permission denied, open ${dirPath}	指定的 filePath 路径没有写权限
+         * + fail sdcard not mounted	指定的 filePath 是一个已经存在的目录
+         * @param filePath 要追加内容的文件路径
+         * @param data 要追加的文本或二进制数据
+         * @param encoding 指定写入文件的字符编码,合法值:"ascii", "base64", "binary", "hex", "ucs2/ucs-2/utf16le/utf-16le","utf-8/utf8", "latin1"
+         */
+        appendFileSync(filePath: string, data: string | ArrayBuffer, encoding: string): void;
+
+        /**
+		 * 复制文件
+         * @param option
+         */
+        copyFile(option: CopyFileOptions): void;
+
+        /**
+		 * FileSystemManager.copyFile 的同步版本，失败时抛出异常
+		 *  + "fail permission denied, copyFile ${srcPath} -> ${destPath}"	指定目标文件路径没有写权限
+         *  + "fail no such file or directory, copyFile ${srcPath} -> ${destPath}" 源文件不存在，或目标文件路径的上层目录不存在
+         * @param srcPath 源文件路径，只可以是普通文件
+         * @param destPath 目标文件路径
+         */
+        copyFileSync(srcPath: string, destPath: string): void;
+
+        /**
+		 * 获取该小程序下的 本地临时文件 或 本地缓存文件 信息
+         * @param option
+         */
+        getFileInfo(option: FileInfoOptions): void;
+
+        /**
+		 * 获取该小程序下已保存的本地缓存文件列表
+         */
+        getSavedFileList(option: {
+        	success?(res: {
+        		fileList: Array<{
+        			/** 本地路径 */
+					filePath: string;
+					 /** 本地文件大小，以字节为单位 */
+					size: number;
+					/** 文件保存时的时间戳，从1970/01/01 08:00:00 到当前时间的秒数 */
+					createtime: number;
+				}>;
+			}): void;
+        	fail?(res:any): void;
+			complete?(res:any): void;
+		}): void;
+
+        /**
+		 * 创建目录
+         * @param option
+         */
+        mkdir(option: MakeDirOptions): void;
+
+        /**
+		 * FileSystemManager.mkdir 的同步版本
+         * @param dirPath 创建的目录路径
+         * @param recursive 是否在递归创建该目录的上级目录后再创建该目录。如果对应的上级目录已经存在，则不创建该上级目录。如 dirPath 为 a/b/c/d 且 recursive 为 true，将创建 a 目录，再在 a 目录下创建 b 目录，以此类推直至创建 a/b/c 目录下的 d 目录。
+         */
+        mkdirSync(dirPath: string, recursive: boolean): void;
+
+        /**
+		 * 读取目录内文件列表
+         * @param option
+         */
+        readdir(option: ReadDirOptions): void;
+
+        /**
+		 * FileSystemManager.readdir 的同步版本
+         * @param dirPath 要读取的目录路径
+		 * @return 指定目录下的文件名数组。
+         */
+        readdirSync(dirPath: string): Array<string>;
+
+        /**
+		 * 读取本地文件内容
+         * @param option
+         */
+        readFile(option: ReadFileOptions): void;
+
+        /**
+		 * FileSystemManager.readFile 的同步版本
+         * @param filePath 要读取的文件的路径
+         * @param encoding 指定读取文件的字符编码，如果不传 encoding，则以 ArrayBuffer 格式读取文件的二进制内容
+		 * @return 文件内容
+		 * @throws
+		 * + fail no such file or directory, open ${filePath}	指定的 filePath 所在目录不存在
+         * + fail permission denied, open ${dirPath}	指定的 filePath 路径没有读权限
+         */
+        readFileSync(filePath: string, encoding?: string): string | ArrayBuffer;
+
+        /**
+		 * 删除该小程序下已保存的本地缓存文件
+         * @param option
+         */
+        removeSavedfile(option: RemoveSavedFileOptions): void;
+
+        /**
+		 * 重命名文件。可以把文件从 oldPath 移动到 newPath
+         * @param option
+         */
+        rename(option: RenameOptions): void;
+
+        /**
+		 * FileSystemManager.rename 的同步版本
+         * @param oldPath 源文件路径，可以是普通文件或目录
+         * @param newPath 新文件路径
+		 * @throws
+		 * + fail permission denied, rename ${oldPath} -> ${newPath}	指定源文件或目标文件没有写权限
+         * + fail no such file or directory, rename ${oldPath} -> ${newPath}	源文件不存在，或目标文件路径的上层目录不存在
+         */
+        renameSync(oldPath: string, newPath: string): void;
+
+        /**
+		 * 删除目录
+         * @param options fail的errMsg合法值:
+		 * + fail no such file or directory ${dirPath}	目录不存在
+         * + fail directory not empty	目录不为空
+         * + fail permission denied, open ${dirPath}	指定的 dirPath 路径没有写权限
+         */
+        rmdir(options: RmDirOptions): void;
+
+        /**
+		 * FileSystemManager.rmdir 的同步版本
+         * @param dirPath 要删除的目录路径
+         * @param recursive 是否递归删除目录。如果为 true，则删除该目录和该目录下的所有子目录以及文件。
+		 * @throws
+		 * + fail no such file or directory ${dirPath}	目录不存在
+         * + fail directory not empty	目录不为空
+         * + fail permission denied, open ${dirPath}	指定的 dirPath 路径没有写权限
+         */
+        rmdirSync(dirPath: string, recursive: boolean): void;
+
+        /**
+		 * 保存临时文件到本地。此接口会移动临时文件，因此调用成功后，tempFilePath 将不可用。
+         * @param option
+         */
+        saveFile(option: SaveFileOptions): void;
+
+        /**
+		 * FileSystemManager.saveFile 的同步版本
+         * @param tempFilePath 临时存储文件路径
+         * @param filePath 要存储的文件路径
+		 * @return 存储后的文件路径
+		 * @throws
+		 * + fail tempFilePath file not exist	指定的 tempFilePath 找不到文件
+         * + fail permission denied, open "${filePath}"	指定的 filePath 路径没有写权限
+         * + fail no such file or directory "${dirPath}"	上级目录不存在
+         */
+        saveFileSync(tempFilePath: string, filePath: string): string;
+
+        /**
+		 * 获取文件 Stats 对象
+         * @param option
+         */
+        stat(option: StatOptions): void;
+
+        /**
+		 * FileSystemManager.stat 的同步版本
+		 * @param path 文件/目录路径
+		 * @param recursive 是否递归获取目录下的每个文件的 Stats 信息
+		 * @return 当 recursive 为 false 时，res.stats 是一个 Stats 对象。当 recursive 为 true 且 path 是一个目录的路径时，res.stats 是一个 Object，key 以 path 为根路径的相对路径，value 是该路径对应的 Stats 对象。
+		 * @throws
+		 * + fail permission denied, open ${path}	指定的 path 路径没有读权限
+         * + fail no such file or directory ${path}	文件不存在
+         */
+        statSync(path: string, recursive?: boolean): Stats | object;
+
+        /**
+		 * 删除文件
+         * @param option
+         */
+        unlink(option: UnlinkOptions): void;
+
+        /**
+		 * FileSystemManager.unlink 的同步版本
+         * @param filePath 要删除的文件路径
+		 * @throws
+		 * + fail permission denied, open ${path}	指定的 path 路径没有读权限
+         * + fail no such file or directory ${path}	文件不存在
+         * + fail operation not permitted, unlink ${filePath}	传入的 filePath 是一个目录
+         */
+        unlinkSync(filePath: string): void;
+
+        /**
+		 * 解压文件
+         * @param option
+         */
+        unzip(option: UnzipOptions): void;
+
+        /**
+		 * 写文件
+         * @param option
+         */
+        writeFile(option: WriteFileOptions): void;
+
+        /**
+		 * FileSystemManager.writeFile 的同步版本
+         * @param filePath 要写入的文件路径
+         * @param data 要写入的文本或二进制数据
+         * @param encoding  指定写入文件的字符编码,合法值:"ascii", "base64", "binary", "hex", "ucs2/ucs-2/utf16le/utf-16le","utf-8/utf8", "latin1"
+		 * @throws
+		 * + fail no such file or directory, open ${filePath}	指定的 filePath 所在目录不存在
+         * + fail permission denied, open ${dirPath}	指定的 filePath 路径没有写权限
+         */
+        wirteFileSync(filePath: string, data: string|ArrayBuffer, encoding: string): void;
+	}
+
+    /**
+	 * 获取全局唯一的文件管理器
+	 * @version 1.9.9
+     */
+	function getFileSystemManager(): FileSystemManager
+
 	interface GetSavedFileListData {
 		/**
 		 * 接口调用结果
@@ -2612,6 +3114,75 @@ declare namespace wx {
 	 * context只是一个记录方法调用的容器，用于生成记录绘制行为的actions数组。context跟<canvas/>不存在对应关系，一个context生成画布的绘制动作数组可以应用于多个<canvas/>。
 	 */
 	interface CanvasContext {
+		/**
+		 * 填充颜色。用法同 CanvasContext.setFillStyle。
+		 *  @version 1.9.90
+		 */
+		fillStyle: string;
+        /**
+		 * 边框颜色。用法同 CanvasContext.setFillStyle。
+		 * @version 1.9.90
+         */
+		strokeStyle: string;
+        /**
+		 * 阴影相对于形状在水平方向的偏移
+		 * @version 1.9.90
+         */
+        shadowOffsetX: number;
+        /**
+		 * 阴影的颜色
+		 * @version 1.9.90
+         */
+        shadowColor: number;
+        /**
+		 * 阴影的模糊级别
+         * @version 1.9.90
+         */
+        shadowBlur: number;
+        /**
+		 * 线条的宽度。用法同 CanvasContext.setLineWidth
+         * @version 1.9.90
+         */
+        lineWidth: number;
+        /**
+		 * 线条的端点样式。用法同 CanvasContext.setLineCap
+         * @version 1.9.90
+         */
+        lineCap: number;
+        /**
+		 * 线条的交点样式。用法同 CanvasContext.setLineJoin
+         * @version 1.9.90
+         */
+        lineJoin: number;
+        /**
+		 * 最大斜接长度。用法同 CanvasContext.setMiterLimit
+         * @version 1.9.90
+         */
+        miterLimit: number;
+        /**
+		 * 虚线偏移量，初始值为0
+         * @version 1.9.90
+         */
+        lineDashOffset: number;
+        /**
+		 * 当前字体样式的属性。符合 CSS font 语法 的 DOMString 字符串，至少需要提供字体大小和字体族名。默认值为 10px sans-serif
+         * @version 1.9.90
+         */
+        font: string;
+        /**
+         * 全局画笔透明度。范围 0-1，0 表示完全透明，1 表示完全不透明。
+         */
+        globalAlpha: number;
+        /**
+		 * 在绘制新形状时应用的合成操作的类型。目前安卓版本只适用于 fill 填充块的合成，用于 stroke 线段的合成效果都是 source-over。
+		 * 目前支持的操作有
+		 * + 安卓：xor, source-over, source-atop, destination-out, lighter, overlay, darken, lighten, hard-light
+         * + iOS：xor, source-over, source-atop, destination-over, destination-out, lighter, multiply, overlay, darken, lighten, color-dodge, color-burn, hard-light, soft-light, difference, exclusion, saturation, luminosity
+         * @version 1.9.90
+         */
+        globalCompositeOperation: string;
+
+
 		/** 获取当前context上存储的绘图动作(不推荐使用) */
 		getActions(): CanvasAction[];
 		/** 清空当前的存储绘图动作(不推荐使用) */
@@ -2659,18 +3230,48 @@ declare namespace wx {
 		 * @param height 矩形区域的高度
 		 */
 		clearRect(x: number, y: number, width: number, height: number): void;
+
+        /**
+		 * 从原始画布中剪切任意形状和尺寸。一旦剪切了某个区域，则所有之后的绘图都会被限制在被剪切的区域内（不能访问画
+		 * 布上的其他区域）。可以在使用 clip 方法前通过使用 save 方法对当前画布区域进行保存，并在以后的任意时间通过
+		 * restore方法对其进行恢复。
+		 * @version 1.6.0
+         */
+		clip(): void;
 		/**
 		 * 在画布上绘制被填充的文本
 		 *
 		 * @param text 在画布上输出的文本
 		 * @param x 绘制文本的左上角x坐标位置
 		 * @param y 绘制文本的左上角y坐标位置
+		 * @param maxWidth 需要绘制的最大宽度，可选
 		 */
-		fillText(text: string, x: number, y: number): void;
+		fillText(text: string, x: number, y: number, maxWidth?: number): void;
+        /**
+		 * 给定的 (x, y) 位置绘制文本描边的方法
+         * @param text 要绘制的文本
+         * @param x 文本起始点的 x 轴坐标
+         * @param y 文本起始点的 y 轴坐标
+		 * @param maxWidth 需要绘制的最大宽度，可选
+		 * @version 1.9.90
+         */
+		strokeText(text: string, x: number, y: number, maxWidth?: number): void;
+        /**
+		 * 测量文本尺寸信息。目前仅返回文本宽度。同步接口。
+         * @param text 要测量的文本
+		 * @version 1.9.90
+         */
+		measureText(text: string): TextMetrics;
 		/**
 		 * 用于设置文字的对齐
 		 */
 		setTextAlign(align: "left" | "center" | "right"): void;
+        /**
+		 * 设置文字的竖直对齐
+         * @param textBaseline 有效值"top","bottom","middle","normal"
+		 * @version 1.4.0
+         */
+		setTextBaseline(textBaseline: "top" | "bottom" | "middle" | "normal"): void;
 		/**
 		 * 绘制图像，图像保持原始尺寸。
 		 * @param imageResource 所要绘制的图片资源, 通过chooseImage得到一个文件路径或者一个项目目录内的图片
@@ -2722,6 +3323,42 @@ declare namespace wx {
 		 * @param alpha 0~1  透明度，0 表示完全透明，1 表示完全不透明
 		 */
 		setGlobalAlpha(alpha: number): void;
+        /**
+		 * 使用矩阵重新设置（覆盖）当前变换的方法
+         * @param scaleX 水平缩放
+         * @param scaleY 垂直缩放
+         * @param skewX 水平倾斜
+         * @param skewY 垂直倾斜
+         * @param translateX 水平移动
+         * @param translateY 垂直移动
+		 * @version 1.9.90
+         */
+		setTransform(
+			scaleX: number,
+            scaleY: number,
+			skewX: number,
+			skewY: number,
+			translateX: number,
+			translateY: number
+		): void
+        /**
+         * 使用矩阵多次叠加当前变换的方法
+         * @param scaleX 水平缩放
+         * @param scaleY 垂直缩放
+         * @param skewX 水平倾斜
+         * @param skewY 垂直倾斜
+         * @param translateX 水平移动
+         * @param translateY 垂直移动
+         * @version 1.9.90
+         */
+		transform(
+            scaleX: number,
+            scaleY: number,
+            skewX: number,
+            skewY: number,
+            translateX: number,
+            translateY: number
+		): void;
 		/**
 		 * 对当前路径进行填充
 		 */
@@ -2797,13 +3434,30 @@ declare namespace wx {
 		 * @param counterclockwise 指定弧度的方向是逆时针还是顺时针。默认是false，即顺时针。
 		 */
 		arc(
-			x: number,
-			y: number,
-			radius: number,
-			startAngle: number,
-			endAngle: number,
-			counterclockwise?: boolean
+            x: number,
+            y: number,
+            radius: number,
+            startAngle: number,
+            endAngle: number,
+            counterclockwise?: boolean
 		): void;
+        /**
+         * 根据控制点和半径绘制圆弧路径，顺时针绘制。
+         *
+         * @param x1 第一个控制点的 x 轴坐标
+         * @param y1 第一个控制点的 y 轴坐标
+         * @param x2 第二个控制点的 x 轴坐标
+         * @param y2 第二个控制点的 y 轴坐标
+         * @param radius 圆的半径
+		 * @version 1.9.90
+         */
+        arcTo(
+            x1: number,
+            y1: number,
+            x2: number,
+            y2: number,
+            radius: number
+        ): void;
 		/**
 		 * 创建二次方贝塞尔曲线
 		 *
@@ -2871,6 +3525,21 @@ declare namespace wx {
 			x1: number,
 			y1: number
 		): CanvasGradient;
+
+        /**
+		 * 对指定的图像创建模式的方法，可在指定的方向上重复元图像
+		 * @param image 重复的图像源，仅支持包内路径和临时路径
+		 * @param repetition 有效值"repeat", "repeat-x", "repeat-y", "no-repeat"
+		 * 	+ repeat: 水平竖直方向都重复
+		 * 	+ repeat-x: 水平方向重复
+		 * 	+ repeat-y: 竖直方向重复
+		 * 	+ no-repeat: 不重复
+         * @version 1.9.90
+         */
+		createPattern(
+			image: string,
+			repetition: "repeat" | "repeat-x" | "repeat-y" | "no-repeat"
+		): string;
 		/**
 		 * 创建一个颜色的渐变点。
 		 * Tip: 小于最小 stop 的部分会按最小 stop 的 color 来渲染，大于最大 stop 的部分会按最大 stop 的 color 来渲染。
@@ -2901,6 +3570,12 @@ declare namespace wx {
 		 * @param lineCap 线条的结束端点样式。 'butt'、'round'、'square'
 		 */
 		setLineCap(lineCap: LineCapType): void;
+        /**
+		 * 设置虚线样式。
+         * @param pattern 一组描述交替绘制线段和间距（坐标空间单位）长度的数字
+         * @param offset 虚线偏移量
+         */
+		setLineDash(pattern: Array<number>, offset: number): void;
 		/**
 		 * 设置两线相交处的样式
 		 *  @param lineJoin 两条线相交时，所创建的拐角类型
@@ -2924,9 +3599,9 @@ declare namespace wx {
 		 * 将之前在绘图上下文中的描述（路径、变形、样式）画到 canvas 中。
 		 * Tip: 绘图上下文需要由 wx.createCanvasContext(canvasId) 来创建。
 		 * @param [reserve] 非必填。本次绘制是否接着上一次绘制，即reserve参数为false，则在本次调用drawCanvas绘制之前native层应先清空画布再继续绘制；若reserver参数为true，则保留当前画布上的内容，本次调用drawCanvas绘制的内容覆盖在上面，默认 false
-		 *
+		 * @param [callback] 非必填。绘制完成后执行的回调函数
 		 */
-		draw(reserve?: boolean): void;
+		draw(reserve?: boolean, callback?: () => void): void;
 	}
 	/**
 	 * 创建并返回绘图上下文context对象。
@@ -3564,6 +4239,42 @@ declare namespace wx {
 		// 在支持 3D Touch 的 iPhone 设备，重按时会触发
 	}
 	// #endregion
+
+    // #region Worker
+    /**
+	 * Worker 实例，主线程中可通过 wx.createWorker 接口获取，worker 线程中可通过全局变量 worker 获取。
+	 * Tips
+     * + Worker 最大并发数量限制为 1 个，创建下一个前请用 Worker.terminate() 结束当前 Worker
+     * + Worker 内代码只能 require 指定 Worker 路径内的文件，无法引用其它路径
+     * + Worker 的入口文件由 wx.createWorker() 时指定，开发者可动态指定 Worker 入口文件
+     * + Worker 内不支持 wx 系列的 API
+     * + Workers 之间不支持发送消息
+     */
+    interface Worker {
+        /**
+		 * 向主线程/Worker 线程发送的消息。
+         * @param message 需要发送的消息，必须是一个可序列化的 JavaScript 对象。
+         */
+		postMessage(message: object): void;
+
+		/** 结束当前 Worker 线程。仅限在主线程 worker 对象上调用。 */
+		terminate(): void;
+
+        /**
+		 * 监听主线程/Worker 线程向当前线程发送的消息的事件。
+         * @param callback 主线程/Worker 线程向当前线程发送的消息的事件的回调函数
+         */
+		onMessage(callback: (message: object) => void): void
+    }
+    /**
+     * 创建一个 Worker 线程。目前限制最多只能创建一个 Worker，创建下一个 Worker 前请先调用 Worker.terminate
+     * @param scriptPath worker 入口文件的绝对路径
+     * @version 1.9.90
+     */
+    function createWorker(scriptPath: string): Worker;
+
+    // #endregion
+
 	// #region 接口
 	interface Logger {
 		/**
@@ -4321,8 +5032,126 @@ declare namespace wx {
 		 */
 		functions?: string;
 	}
-	// #region App 函数及参数
+
+	//region mDNS
+
+    /**
+	 * 取消监听mDNS 服务停止搜索的事件
+     * @param callback mDNS 服务停止搜索的事件的回调函数
+	 * @version 2.4.0
+     */
+    function offLocalServiceDiscoveryStop(callback: () => void): void;
+
+    /**
+     * 取消监听mDNS 服务发现的事件
+     * @param callback mDNS 服务发现的事件的回调函数
+     * @version 2.4.0
+     */
+    function offLocalServiceFound(callback: () => void): void;
+    /**
+     * 取消监听mDNS 服务离开的事件
+     * @param callback mDNS 服务离开的事件的回调函数
+     * @version 2.4.0
+     */
+    function offLocalServiceLost(callback: () => void): void;
+
+    /**
+	 * 取消监听mDNS 服务解析失败的事件
+     * @param callback mDNS 服务解析失败的事件的回调函数
+	 * @version 2.4.0
+     */
+    function offLocalServiceResolveFail(callback: () => void): void;
+
+    /**
+     * 监听mDNS 服务停止搜索的事件
+     * @param callback mDNS 服务停止搜索的事件的回调函数
+     * @version 2.4.0
+     */
+    function onLocalServiceDiscoveryStop(callback: () => void): void;
+
+    /**
+     * 监听mDNS 服务发现的事件
+     * @param callback mDNS 服务发现的事件的回调函数
+     * @version 2.4.0
+     */
+    function onLocalServiceFound(callback: (res: {
+        serviceType: string,
+		serviceName: string,
+		ip: string,
+		port: number
+    }) => void): void;
+
+    /**
+     * 监听mDNS 服务离开的事件
+     * @param callback mDNS 服务离开的事件的回调函数
+     * @version 2.4.0
+     */
+    function onLocalServiceLost(callback: (res: {
+        serviceType: string,
+        serviceName: string
+	}) => void): void;
+
+    /**
+     * 监听mDNS 服务解析失败的事件
+     * @param callback mDNS 服务解析失败的事件的回调函数
+     * @version 2.4.0
+     */
+    function onLocalServiceResolveFail(callback: (res: {
+        serviceType: string,
+        serviceName: string
+    }) => void): void;
+
+    interface StartLocalServiceDiscoverOption {
+    	/** 要搜索的服务类型 */
+        serviceType: string,
+		/** 接口调用成功的回调函数 */
+        success?: () => void,
+        /** 接口调用失败的回调函数 */
+		fail?: (res: {
+			/**
+			 * 合法值:
+			 * + "invalid param" serviceType为空
+			 * + "scan task already exist" 在当前 startLocalServiceDiscovery 发起的搜索未停止的情况下，再次调用 startLocalServiceDiscovery
+			 */
+            errMsg: string
+		}) => void,
+		/** 接口调用结束的回调函数（调用成功、失败都会执行） */
+		complete?: () => void
+	}
+
+    /**
+     * 开始搜索局域网下的 mDNS 服务。搜索的结果会通过 wx.onLocalService* 事件返回。
+     * @param option
+	 * Tips:
+	 * 1. wx.startLocalServiceDiscovery 是一个消耗性能的行为，开始 30 秒后会自动 stop 并执行 wx.onLocalServiceDiscoveryStop 注册的回调函数。
+     * 2. 在调用 wx.startLocalServiceDiscovery 后，在这次搜索行为停止后才能发起下次 wx.startLocalServiceDiscovery。停止本次搜索行为的操作包括调用 wx.stopLocalServiceDiscovery 和 30 秒后系统自动 stop 本次搜索。
+     * @version 2.4.0
+     */
+    function startLocalServiceDiscovery(option: StartLocalServiceDiscoverOption): void;
+
+    interface StopLocalServiceDiscoverOption {
+        /** 接口调用成功的回调函数 */
+        success?: () => void,
+        /** 接口调用失败的回调函数 */
+        fail?: (res: {
+            /**
+             * 错误信息，合法值:
+             * + "task not found" 在当前没有处在搜索服务中的情况下调用 stopLocalServiceDiscovery
+             */
+            errMsg: string
+        }) => void,
+        /** 接口调用结束的回调函数（调用成功、失败都会执行） */
+        complete?: () => void
+    }
+    /**
+     * 停止搜索 mDNS 服务
+     * @param option
+     * @version 2.4.0
+     */
+    function stopLocalServiceDiscovery(option: StopLocalServiceDiscoverOption): void;
+	//endregion
 }
+// #region App 函数及参数
 /**
  * App() 函数用来注册一个小程序。
  * 接受一个 object 参数，其指定小程序的生命周期函数等。
