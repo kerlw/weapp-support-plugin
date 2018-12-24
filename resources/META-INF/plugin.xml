@@ -1,17 +1,24 @@
 <idea-plugin>
     <id>com.ytw88.weappsupport</id>
     <name>WeChat weapp Support</name>
-    <version>1.0</version>
-    <vendor email="kerl.d.w@gmail.com" url="https://github.com/kerlw/weapp-support-plugin">Kerl.D.W</vendor>
+    <version>0.1.0</version>
+    <vendor email="kerl.d.w@gmail.com" url="https://github.com/kerlw/weapp-support-plugin">kerlw</vendor>
 
     <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+      Support we-app development<br>
+      <ul>
+        <li>Using predefined js library base on https://github.com/DefinitelyTyped/DefinitelyTyped</li>
+        <li>Use HTMLFileType for wxml file type</li>
+        <li>Use CSSFileType for wxss file type</li>
+        <li>We-game support not included yet</li>
+        <li>We-app framework not support yet</li>
+      </ul>
+
     ]]></description>
 
     <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
+      <li>0.1.0</li>
+      Just a simple ide for we-app<br>
     ]]>
     </change-notes>
 
