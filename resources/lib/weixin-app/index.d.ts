@@ -3640,7 +3640,7 @@ declare namespace wx {
 	/**
 	 * 把当前画布的内容导出生成图片，并返回文件路径
 	 */
-	function canvasToTempFilePath(options: CanvasToTempFilePathOptions): void;
+	function canvasToTempFilePath(options: CanvasToTempFilePathOptions, thisObj: object): void;
 	interface CanvasImageDataOptions extends BaseOptions {
 		/** 画布标识，传入 <canvas /> 的 canvas-id  */
 		canvasId: string;
@@ -3657,12 +3657,12 @@ declare namespace wx {
 	 * 返回一个数组，用来描述 canvas 区域隐含的像素数据
 	 * @version 1.9.0
 	 */
-	function canvasGetImageData(options: CanvasImageDataOptions): void;
+	function canvasGetImageData(options: CanvasImageDataOptions, thisObj: object): void;
 	/**
 	 * 将像素数据绘制到画布的方法
 	 * @version 1.9.0
 	 */
-	function canvasPutImageData(options: CanvasImageDataOptions): void;
+	function canvasPutImageData(options: CanvasImageDataOptions, thisObj: object): void;
 	// 页面-----下拉刷新
 	/**
 	 * 开始下拉刷新，调用后触发下拉刷新动画，效果与用户手动下拉刷新一致

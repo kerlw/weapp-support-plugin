@@ -82,3 +82,7 @@ IDEA官方文档中，对于语言支持插件开发的文档"Part VII - Custom 
   4. 增加wx.compressImage接口定义
   5. 增加FileSystemManager及wx.getFileSystemManager定义
   6. createContext接口标记为deprecated,增加createCanvasContext接口的定义
+  
+  ### 2018.12.27
+  更新canvas相关几个api定义，全部加上this参数的支持
+
