@@ -218,7 +218,7 @@ declare namespace wx {
 	/**
 	 * 关闭WebSocket连接。
 	 */
-	function closeSocket(options: CloseSocketOptions): void;
+	function closeSocket(options?: CloseSocketOptions): void;
 	/** 监听WebSocket关闭。 */
 	function onSocketClose(callback: () => void): void;
 	// #endregion
