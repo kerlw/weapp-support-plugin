@@ -8,14 +8,18 @@ JetBrains的Plugin开发虽然官方有很多文档，但是工程太庞大了�
 js做一些扩展就可以用了，可惜的是没有发现支持的扩展路径。这两天尝试写wxml的bnf语法文件，已经有点
 焦头烂额的感觉。
 
-
-
 IDEA官方文档中，对于语言支持插件开发的文档"Part VII - Custom Languages"包括两大部分：
 
 [介绍框架](http://www.jetbrains.org/intellij/sdk/docs/reference_guide/custom_language_support.html)
 
 [具体的教程](http://www.jetbrains.org/intellij/sdk/docs/tutorials/custom_language_support_tutorial.html)
 
+## TODO list
+近期希望完成以下功能列表，如果有熟悉idea插件开发的大牛能够协助一二自然是最好不过的了。实在是难以找到有效的文档来发现最佳的实现方案。
+
+[ ] css中增加对rpx单位的支持
+[ ] wxml中增加对wx:if/wx:else/wx:elif的支持
+[ ] 增加对微信小程序工程检查的支持
 
 ## 更新日记
 
