@@ -31,7 +31,8 @@
     <depends>com.intellij.modules.lang</depends>
     <!-- This enables the PSI capability for JavaScript -->
     <depends>JavaScript</depends>
-
+    <depends>com.intellij.css</depends>
+    
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
         <framework.type implementation="com.ytw88.weappsupport.WeappFramework" />
@@ -45,6 +46,7 @@
         <lang.parserDefinition language="weapp-wxml" implementationClass="com.ytw88.weappsupport.wxml.WxmlParserDefinition"/>
         <colorSettingsPage implementation="com.ytw88.weappsupport.wxml.WxmlColorSettingsPage"/>
 
+        <css.elementDescriptorProvider implementation="com.ytw88.weappsupport.wxss.WxssElementDescriptorProvider" />
     </extensions>
 
     <extensions defaultExtensionNs="JavaScript">
