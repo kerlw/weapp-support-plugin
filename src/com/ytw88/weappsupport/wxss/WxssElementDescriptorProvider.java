@@ -5,6 +5,7 @@ import com.intellij.psi.PsiReference;
 import com.intellij.psi.css.CssMediaFeatureDescriptor;
 import com.intellij.psi.css.CssPropertyDescriptor;
 import com.intellij.psi.css.CssSimpleSelector;
+import com.intellij.psi.css.CssTerm;
 import com.intellij.psi.css.descriptor.CssContextType;
 import com.intellij.psi.css.descriptor.CssFunctionDescriptor;
 import com.intellij.psi.css.descriptor.CssPseudoSelectorDescriptor;
@@ -20,6 +21,7 @@ public class WxssElementDescriptorProvider extends CssElementDescriptorProviderI
     @Nullable
     @Override
     public CssPropertyDescriptor getPropertyDescriptor(@NotNull String propertyName, @Nullable PsiElement context) {
+        System.out.println("getPropertyDescriptor:" + propertyName + ", " + context.toString());
         CssPropertyDescriptor ret = super.getPropertyDescriptor(propertyName, context);
         return ret;
     }
@@ -117,6 +119,12 @@ public class WxssElementDescriptorProvider extends CssElementDescriptorProviderI
     @Override
     public Collection<? extends CssValueDescriptor> getNamedValueDescriptors(@NotNull String name, @Nullable CssValueDescriptor parent) {
         Collection ret = super.getNamedValueDescriptors(name, parent);
+        return ret;
+    }
+
+    @Override
+    public boolean isColorTerm(@NotNull CssTerm term) {
+        boolean ret = super.isColorTerm(term);
         return ret;
     }
 }

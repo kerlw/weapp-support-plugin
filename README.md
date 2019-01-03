@@ -80,7 +80,8 @@ IDEA官方文档中，对于语言支持插件开发的文档"Part VII - Custom 
   
   ### 2018.12.20
   更新wxapi的定义
-  1. CanvasContext更新接口定义，增加属性定义，增加方法arcTo, clip, createPattern, measureText, setLineDash, setTextBaseline, strokeText, setTransform, transform定义
+  1. CanvasContext更新接口定义，增加属性定义，增加方法arcTo, clip, createPattern, measureText, setLineDash, 
+  setTextBaseline, strokeText, setTransform, transform定义
   2. 增加Worker相关定义
   3. 增加mDNS相关接口定义
   4. 增加wx.compressImage接口定义
@@ -91,8 +92,15 @@ IDEA官方文档中，对于语言支持插件开发的文档"Part VII - Custom 
   更新canvas相关几个api定义，全部加上this参数的支持
   
   ### 2019.01.02
-  看了postcss的部分代码，发现它有用到com.intellij.psi.css.impl包中的部分类，但是在sdk的库中却没有相关类，立刻想到和javascript一样，是一个插件库，于是在idea中把sdk编辑了一下，添加了css的插件的jar包，果然可以找到相关的类了，也许可以从这里突破实现css中添加rpx单位支持
+  看了postcss的部分代码，发现它有用到com.intellij.psi.css.impl包中的部分类，但是在sdk的库中却没有相关类，
+  立刻想到和javascript一样，是一个插件库，于是在idea中把sdk编辑了一下，添加了css的插件的jar包，果然可以找到
+  相关的类了，也许可以从这里突破实现css中添加rpx单位支持
   
-  经过一天的研究，发现大概能够通过css的扩展点定义直接扩展出自定义的属性定义，但是想要增加一个单位的定义却是没有路径的。不知道是不是我没有发现可用路径，在论坛提交了一个帖子等着官方回复吧。
+  经过一天的研究，发现大概能够通过css的扩展点定义直接扩展出自定义的属性定义，但是想要增加一个单位的定义却是没有
+  路径的。不知道是不是我没有发现可用路径，在论坛提交了一个帖子等着官方回复吧。
   
-
+  ### 2019.01.03
+  今天又研究了一天如何实现添加rpx单位支持，感觉又近了一步，但是还是很遥远。主要对psi相关的一整套流程并没有捋清
+  楚。官方论坛上我发的帖子并没有得到回复。我在这个事情上话费的时间已经太长了，恐怕要暂时搁置了。实话说idea的各
+  个ide做得确实是比较好用的，但是插件开发方面给的支持力度还是远远不足，有点太专业了，而文档对于整体的架构、流程
+  的介绍又严重不足，只能从各种插件开源的代码里面去学习，学习成本太高。

@@ -39,8 +39,10 @@
         <moduleBuilder builderClass="com.ytw88.weappsupport.WeappModuleBuilder" id="WEAPP_BUILDER" order="first" />
         <moduleType implementationClass="com.ytw88.weappsupport.WeappModuleType" id="WEAPP_MODULE" />
         <projectStructureDetector implementation="com.ytw88.weappsupport.WeappProjectStructureDetector" />
-        <fileTypeFactory implementation="com.ytw88.weappsupport.wxss.WxssFileTypeFactory" />
         <fileTypeFactory implementation="com.ytw88.weappsupport.wxml.WxmlFileTypeFactory" />
+
+        <fileTypeFactory implementation="com.ytw88.weappsupport.wxss.WxssFileTypeFactory" />
+        <lang.parserDefinition language="weapp-wxss" implementationClass="com.ytw88.weappsupport.wxss.parser.WxssParserDefinition"/>
 
         <lang.syntaxHighlighterFactory language="weapp-wxml" implementationClass="com.ytw88.weappsupport.wxml.WxmlSyntaxHighlighterFactory"/>
         <lang.parserDefinition language="weapp-wxml" implementationClass="com.ytw88.weappsupport.wxml.WxmlParserDefinition"/>
