@@ -23,7 +23,7 @@ public class WxssParser extends CssParser2 {
     @Override
     protected boolean parseSingleDeclarationInBlock(boolean withPageMarginRules, boolean parseInlineCss,
                                                     boolean requirePropertyValue, @NotNull IElementType elementType) {
-
+        System.out.println("parseSingleDeclarationInBlock(" + withPageMarginRules + "," + parseInlineCss + "," + requirePropertyValue + "," + elementType.toString());
         return super.parseSingleDeclarationInBlock(withPageMarginRules, parseInlineCss, requirePropertyValue, elementType);
     }
 
@@ -35,11 +35,24 @@ public class WxssParser extends CssParser2 {
 
     @Override
     public ASTNode parse(IElementType root) {
+        System.out.println("parse: " + root.toString());
         return super.parse(root);
     }
 
     @Override
     protected boolean parseStylesheetItem() {
         return super.parseStylesheetItem();
+    }
+
+    @Override
+    protected boolean parseTermList(boolean strict, boolean nameValuePairSyntax, IElementType... stopElements) {
+        boolean ret = super.parseTermList(strict, nameValuePairSyntax, stopElements);
+        return ret;
+    }
+
+    @Override
+    protected boolean _parseTerm(boolean strict, boolean nameValuePairSyntax) {
+        boolean ret = super._parseTerm(strict, nameValuePairSyntax);
+        return ret;
     }
 }

@@ -23,6 +23,7 @@ public class WxssElementDescriptorProvider extends CssElementDescriptorProviderI
     public CssPropertyDescriptor getPropertyDescriptor(@NotNull String propertyName, @Nullable PsiElement context) {
         System.out.println("getPropertyDescriptor:" + propertyName + ", " + context.toString());
         CssPropertyDescriptor ret = super.getPropertyDescriptor(propertyName, context);
+        System.out.println("    ret: " + ret.toString());
         return ret;
     }
 

@@ -33,7 +33,7 @@ public class WxssParserDefinition extends CSSParserDefinition {
     @NotNull
     @Override
     public PsiElement createElement(ASTNode node) {
-        System.out.println(node.toString());
+        System.out.println("createElement: " + node.toString());
         PsiElement ret = super.createElement(node);
         return ret;
     }
