@@ -104,3 +104,8 @@ IDEA官方文档中，对于语言支持插件开发的文档"Part VII - Custom 
   楚。官方论坛上我发的帖子并没有得到回复。我在这个事情上话费的时间已经太长了，恐怕要暂时搁置了。实话说idea的各
   个ide做得确实是比较好用的，但是插件开发方面给的支持力度还是远远不足，有点太专业了，而文档对于整体的架构、流程
   的介绍又严重不足，只能从各种插件开源的代码里面去学习，学习成本太高。
+  
+  ### 2019.01.16
+  官方论坛的提问终于得到了答复，遗憾的是，没有方法能够为css添加新的单位支持
+  
+  [论坛提问帖子](https://intellij-support.jetbrains.com/hc/en-us/community/posts/360002386819-How-can-I-add-additional-unit-token-define-for-CSS-language-)
